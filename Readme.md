@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Stanislaw Chirko](https://up.htmlacademy.ru/javascript/20/user/1288861).
-* Наставник: `Неизвестно`.
+* Наставник: [Andrey Lutogin](https://htmlacademy.ru/profile/id1096725).
 
 ---
 
