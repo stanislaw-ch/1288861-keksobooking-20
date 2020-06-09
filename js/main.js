@@ -146,7 +146,7 @@ var similarMapPin = document.querySelector('.map__pins');
 var similarMapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 /**
- * Отрисовывает карточку
+ * Отрисовывает маркер
  * @param {array} mapPin
  *
  * @return {array} mapPinElement
@@ -176,7 +176,7 @@ var renderPinsMarkup = function (pinsData) {
 
 renderPinsMarkup(getMapPins());
 
-var similarCardPin = document.querySelector('.map');
+var similarCard = document.querySelector('.map');
 var filtersContainer = document.querySelector('.map__filters-container');
 var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var typesMap = {
@@ -219,7 +219,7 @@ var renderCardList = function (cardData) {
   // for (var j = 0; j < cardData.length; j++) {
   Fragment.appendChild(renderCard(cardData[0]));
   // }
-  similarCardPin.insertBefore(Fragment, filtersContainer);
+  similarCard.insertBefore(Fragment, filtersContainer);
 };
 
 renderCardList(getMapPins());
