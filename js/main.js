@@ -123,7 +123,6 @@ var getMapPinObject = function (i) {
   return mapPin;
 };
 
-
 /**
  * Возвращает массив из объектов
  * @param {number} number
@@ -178,6 +177,7 @@ var renderPinsMarkup = function (pinsData) {
 renderPinsMarkup(getMapPins());
 
 var similarCardPin = document.querySelector('.map');
+var filtersContainer = document.querySelector('.map__filters-container');
 var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 var typesMap = {
   palace: 'Дворец',
@@ -202,14 +202,16 @@ var renderCard = function (card) {
     .textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time')
     .textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
-  cardElement.querySelector('.popup__features').innerHTML = '';
+  // cardElement.querySelector('.popup__features').innerHTML = '';
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
+  cardElement.querySelector('.popup__photo').src = card.offer.photos;
+  cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
   return cardElement;
 };
 
 /**
- * Отрисовывает метки на карте
+ * Отрисовывает карточку объявления
  * @param {array} cardData
  */
 var renderCardList = function (cardData) {
@@ -217,7 +219,7 @@ var renderCardList = function (cardData) {
   // for (var j = 0; j < cardData.length; j++) {
   Fragment.appendChild(renderCard(cardData[0]));
   // }
-  similarCardPin.appendChild(Fragment);
+  similarCardPin.insertBefore(Fragment, filtersContainer);
 };
 
 renderCardList(getMapPins());
