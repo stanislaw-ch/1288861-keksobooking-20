@@ -90,21 +90,6 @@ function getRandomFloat(min, max) {
   return randNumber;
 }
 
-// /**
-//  * Возвращает массив
-//  * @param {array} mapPin
-//  *
-//  * @return {array} array
-//  */
-// var getArr = function (mapPin) {
-//   var array = [];
-//   for (var i = 0; i < mapPin.length; i++) {
-//     var j = mapPin[getRandomFloat(0, mapPin.length - 1)];
-//     array = [j];
-//   }
-//   return array;
-// };
-
 /**
  * Возвращает сгенерированный объект
  * @param {number} i
@@ -191,3 +176,48 @@ var renderPinsMarkup = function (pinsData) {
 };
 
 renderPinsMarkup(getMapPins());
+
+var similarCardPin = document.querySelector('.map');
+var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var typesMap = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+/**
+ * Отрисовывает карточку
+ * @param {array} card
+ *
+ * @return {array} cardElement
+ */
+var renderCard = function (card) {
+  var cardElement = similarCardTemplate.cloneNode(true);
+
+  cardElement.querySelector('.popup__title').textContent = card.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = typesMap[card.offer.type];
+  cardElement.querySelector('.popup__text--capacity')
+    .textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time')
+    .textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  cardElement.querySelector('.popup__features').innerHTML = '';
+  cardElement.querySelector('.popup__description').textContent = card.offer.description;
+
+  return cardElement;
+};
+
+/**
+ * Отрисовывает метки на карте
+ * @param {array} cardData
+ */
+var renderCardList = function (cardData) {
+  var Fragment = document.createDocumentFragment();
+  // for (var j = 0; j < cardData.length; j++) {
+  Fragment.appendChild(renderCard(cardData[0]));
+  // }
+  similarCardPin.appendChild(Fragment);
+};
+
+renderCardList(getMapPins());
