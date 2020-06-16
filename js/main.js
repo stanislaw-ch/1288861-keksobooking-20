@@ -78,6 +78,58 @@ var OBJECT = {
   }
 };
 
+var MAIN_MAP_PIN_WIDTH = 65;
+var MAIN_MAP_PIN_HEIGTH = 65;
+
+var MIN_TITLE_LENGTH = 30;
+var MAX_TITLE_LENGTH = 100;
+
+var MIN_PRICE_BUNGALO = 0;
+var MIN_PRICE_FLAT = 1000;
+var MIN_PRICE_HOUSE = 5000;
+var MIN_PRICE_PALACE = 10000;
+
+var MAX_PRICE_LENGTH = 1000000;
+var MAP_PIN_HEIGTH = 85;
+
+var typesMap = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
+var mapBlock = document.querySelector('.map');
+var similarMapPin = document.querySelector('.map__pins');
+var similarMapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var template = document.querySelector('template');
+var popupPhoto = template.content.querySelector('.popup__photo');
+var similarCard = document.querySelector('.map');
+var filtersContainer = document.querySelector('.map__filters-container');
+var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var filtersMap = document.querySelector('.map__filters');
+var filterAd = document.querySelector('.ad-form');
+var mainMapPin = similarMapPin.querySelector('.map__pin--main');
+
+var filterAdress = filterAd.querySelector('#address');
+var mainMapPinPositionX = Math.floor(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
+var mainMapPinPositionY = Math.floor(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGTH / 2);
+var MapPinPositionX = Math.floor(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
+var MapPinPositionY = Math.floor(parseInt(mainMapPin.style.top, 10) + MAP_PIN_HEIGTH);
+
+var filterTitleInput = filterAd.querySelector('.ad-form__label');
+
+var filterTypeSelect = filterAd.querySelector('#type');
+var filterPriceInput = filterAd.querySelector('#price');
+var submit = filterAd.querySelector('.ad-form__submit');
+
+var filterRoomSelect = filterAd.querySelector('#room_number');
+var filterCapacitySelect = filterAd.querySelector('#capacity');
+
+var filterTimeInSelect = filterAd.querySelector('#timein');
+var filterTimeOutSelect = filterAd.querySelector('#timeout');
+
 /**
  * Возвращает случайное число в заданном диапозоне
  * @param {number} min
@@ -96,7 +148,6 @@ function getRandomFloat(min, max) {
  *
  * @return {object} array
  */
-
 var getMapPinObject = function (i) {
   var mapPin = {
     author: {
@@ -112,7 +163,7 @@ var getMapPinObject = function (i) {
       checkout: OBJECT.CHECKOUT[getRandomFloat(0, OBJECT.CHECKOUT.length - 1)],
       features: OBJECT.FEATURES[getRandomFloat(0, OBJECT.FEATURES.length - 1)],
       description: OBJECT.DESCRIPTION[getRandomFloat(0, OBJECT.DESCRIPTION.length - 1)],
-      photos: OBJECT.PHOTOS[getRandomFloat(0, OBJECT.PHOTOS.length - 1)],
+      photos: OBJECT.PHOTOS
     },
     location: {
       x: getRandomFloat(OBJECT.LOCATION.X.MIN, OBJECT.LOCATION.X.MAX) - PIN_POSITION_X,
@@ -136,14 +187,6 @@ var getMapPins = function () {
   }
   return array;
 };
-
-// console.log(getMapPins());
-
-var mapBlock = document.querySelector('.map');
-mapBlock.classList.remove('map--faded');
-
-var similarMapPin = document.querySelector('.map__pins');
-var similarMapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 /**
  * Отрисовывает маркер
@@ -174,17 +217,21 @@ var renderPinsMarkup = function (pinsData) {
   similarMapPin.appendChild(Fragment);
 };
 
-renderPinsMarkup(getMapPins());
-
-var similarCard = document.querySelector('.map');
-var filtersContainer = document.querySelector('.map__filters-container');
-var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-var typesMap = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
+/**
+ * Отрисовывает превью из фото в карточке объявления
+ * @param {array} card
+ * @return {object} photosFragment
+ */
+var createPhotosFragment = function (card) {
+  var photosFragment = document.createDocumentFragment();
+  for (var i = 0; i < card.offer.photos.length; i++) {
+    var popupPhotoItem = popupPhoto.cloneNode(true);
+    popupPhotoItem.src = card.offer.photos[i];
+    photosFragment.appendChild(popupPhotoItem);
+  }
+  return photosFragment;
 };
+
 /**
  * Отрисовывает карточку
  * @param {array} card
@@ -204,22 +251,209 @@ var renderCard = function (card) {
     .textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
   // cardElement.querySelector('.popup__features').innerHTML = '';
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
-  cardElement.querySelector('.popup__photo').src = card.offer.photos;
+  cardElement.querySelector('.popup__photos').removeChild(cardElement.querySelector('.popup__photo'));
+  cardElement.querySelector('.popup__photos').appendChild(createPhotosFragment(card));
   cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
   return cardElement;
 };
 
 /**
- * Отрисовывает карточку объявления
+ * Отрисовывает карточку объявления после активации страницы
  * @param {array} cardData
  */
 var renderCardList = function (cardData) {
   var Fragment = document.createDocumentFragment();
-  // for (var j = 0; j < cardData.length; j++) {
   Fragment.appendChild(renderCard(cardData[0]));
-  // }
   similarCard.insertBefore(Fragment, filtersContainer);
 };
 
-renderCardList(getMapPins());
+/**
+ * Переключает поля формы объявления для input, select, textarea в активное или не активное состояние
+ * @param {object} name
+ * @param {boolean} bDisabled
+ */
+var toggleFormElementsAdform = function (name, bDisabled) {
+  var inputs = name.querySelectorAll('input');
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].disabled = bDisabled;
+  }
+  var selects = name.querySelectorAll('select');
+  for (i = 0; i < selects.length; i++) {
+    selects[i].disabled = bDisabled;
+  }
+  var textareas = name.querySelectorAll('textarea');
+  for (i = 0; i < textareas.length; i++) {
+    textareas[i].disabled = bDisabled;
+  }
+};
+
+/**
+ * Переключает поля фильтра карты select в активное или не активное состояние
+ * @param {object} name
+ * @param {boolean} bDisabled
+ */
+var toggleFormElementsMapFilters = function (name, bDisabled) {
+  var selects = name.querySelectorAll('select');
+  for (var j = 0; j < selects.length; j++) {
+    selects[j].disabled = bDisabled;
+  }
+};
+
+/**
+ * Переключает сайт в активное состояние, делает поля форм активными и добавляет координаты в поле с адресом для пина
+ */
+var enableSite = function () {
+  mapBlock.classList.remove('map--faded');
+  filterAd.classList.remove('ad-form--disabled');
+  toggleFormElementsMapFilters(filtersMap, false);
+  toggleFormElementsAdform(filterAd, false);
+  filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+  renderPinsMarkup(getMapPins());
+  renderCardList(getMapPins());
+};
+
+/**
+ * Переключает значения полей для типа жилья, относительно цены
+ * @param {object} selectList
+ * @param {object} selectOption
+ */
+var setFilterByType = function (selectList, selectOption) {
+  switch (selectList.value) {
+    case 'bungalo':
+      selectOption.placeholder = MIN_PRICE_BUNGALO;
+      break;
+    case 'flat':
+      selectOption.placeholder = MIN_PRICE_FLAT;
+      break;
+    case 'house':
+      selectOption.placeholder = MIN_PRICE_HOUSE;
+      break;
+    case 'palace':
+      selectOption.placeholder = MIN_PRICE_PALACE;
+      break;
+  }
+};
+
+/**
+ * Отслеживает переключение значений полей для заезда и выезда
+ * @param {object} selectList
+ * @param {object} selectOption
+ */
+var setTimeByInOutType = function (selectList, selectOption) {
+  switch (selectList.value) {
+    case '12:00':
+      selectOption.value = '12:00';
+      break;
+    case '13:00':
+      selectOption.value = '13:00';
+      break;
+    case '14:00':
+      selectOption.value = '14:00';
+      break;
+  }
+};
+
+/**
+ * Возращает ошибку если валидация количества комнат и количества мест не соответствует заданным параметрам
+ * @return {object}
+ */
+var isValid = function () {
+  var valueRooom = parseInt(filterRoomSelect.value, 10);
+  var valueCapacity = parseInt(filterCapacitySelect.value, 10);
+  if (valueRooom === 1 && valueCapacity > 1 || valueRooom === 1 && valueCapacity === 0) {
+    return filterRoomSelect.setCustomValidity('1 комната — для 1 гостя!');
+  } else if (valueRooom === 2 && valueCapacity > 2 || valueRooom === 2 && valueCapacity === 0) {
+    return filterRoomSelect.setCustomValidity('2 комнаты — для 1 или 2 гостей!');
+  } else if (valueRooom === 3 && valueCapacity === 0) {
+    return filterRoomSelect.setCustomValidity('3 комнаты — для 1, 2 или 3 гостей!');
+  } else if (valueRooom === 100 && valueCapacity !== 0) {
+    return filterRoomSelect.setCustomValidity('100 комнат — не для гостей!');
+  } else {
+    return filterRoomSelect.setCustomValidity('');
+  }
+};
+
+// Отображает в поле с адрессом координаты главного пина после загрузки страницы
+filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
+
+// Переключает поля форм в неактивное состояние
+toggleFormElementsMapFilters(filtersMap, true);
+toggleFormElementsAdform(filterAd, true);
+
+// Отслеживает клик левой клавиши по пину
+mainMapPin.addEventListener('mousedown', function () {
+  if (event.which === 1) {
+    enableSite();
+  }
+});
+
+// Отслеживает нажатие клавиши enter по пину
+mainMapPin.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    enableSite();
+  }
+});
+
+// Переключает значения полей для типа жилья, относительно цены
+setFilterByType(filterTypeSelect, filterPriceInput);
+
+// Переключает значения полей въезда
+setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
+
+// Переключает значения полей выезда
+setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
+
+// Отслеживает переключение значений полей для типа жилья, относительно цены
+filterTypeSelect.addEventListener('change', function () {
+  setFilterByType(filterTypeSelect, filterPriceInput);
+});
+
+// Отслеживает переключение значений полей для поля TimeIn
+filterTimeInSelect.addEventListener('change', function () {
+  setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
+});
+
+// Отслеживает переключение значений полей для поля TimeOut
+filterTimeOutSelect.addEventListener('change', function () {
+  setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
+});
+
+// Отслеживает нажатие по клавише "Опубликовать"
+submit.addEventListener('click', function () {
+
+  // Проверяет поле Title на ошибки
+  filterTitleInput.addEventListener('invalid', function () {
+    if (filterTitleInput.validity.valueMissing) {
+      filterTitleInput.setCustomValidity('Обязательное поле');
+    } else {
+      filterTitleInput.setCustomValidity('');
+    }
+  });
+
+  // Проверяет поле Title на ошибки
+  filterTitleInput.addEventListener('input', function () {
+    var valueLength = filterTitleInput.value.length;
+
+    if (valueLength < MIN_TITLE_LENGTH) {
+      filterTitleInput.setCustomValidity('Ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' симв.');
+    } else if (valueLength > MAX_TITLE_LENGTH) {
+      filterTitleInput.setCustomValidity('Удалите лишние ' + (valueLength - MAX_TITLE_LENGTH) + ' симв.');
+    } else {
+      filterTitleInput.setCustomValidity('');
+    }
+  });
+
+  // Проверяет поле Price на ошибки
+  filterPriceInput.addEventListener('input', function () {
+    var value = filterPriceInput.value;
+
+    if (value > MAX_PRICE_LENGTH) {
+      filterPriceInput.setCustomValidity('Введите сумму менее ' + MAX_PRICE_LENGTH);
+    } else {
+      filterPriceInput.setCustomValidity('');
+    }
+  });
+
+  isValid();
+});
