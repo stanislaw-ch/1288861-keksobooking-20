@@ -359,15 +359,19 @@ var enableSite = function () {
 var setFilterByType = function (selectList, selectOption) {
   switch (selectList.value) {
     case 'bungalo':
+      selectOption.min = 0;
       selectOption.placeholder = MIN_PRICE_BUNGALO;
       break;
     case 'flat':
+      selectOption.min = 1000;
       selectOption.placeholder = MIN_PRICE_FLAT;
       break;
     case 'house':
+      selectOption.min = 5000;
       selectOption.placeholder = MIN_PRICE_HOUSE;
       break;
     case 'palace':
+      selectOption.min = 10000;
       selectOption.placeholder = MIN_PRICE_PALACE;
       break;
   }
