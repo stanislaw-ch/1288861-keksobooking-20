@@ -142,6 +142,13 @@ function getRandomFloat(min, max) {
   return randNumber;
 }
 
+var onEscDown = function (evt) {
+  var MapCardRemove = mapBlock.querySelector('.map__card');
+  if (evt.keyCode === 27) {
+    MapCardRemove.remove();
+  }
+};
+
 /**
  * Возвращает сгенерированный объект
  * @param {number} i
@@ -161,7 +168,7 @@ var getMapPinObject = function (i) {
       guests: getRandomFloat(OBJECT.GUESTS.MIN, OBJECT.GUESTS.MAX),
       checkin: OBJECT.CHECKIN[getRandomFloat(0, OBJECT.CHECKIN.length - 1)],
       checkout: OBJECT.CHECKOUT[getRandomFloat(0, OBJECT.CHECKOUT.length - 1)],
-      features: OBJECT.FEATURES[getRandomFloat(0, OBJECT.FEATURES.length - 1)],
+      features: OBJECT.FEATURES,
       description: OBJECT.DESCRIPTION[getRandomFloat(0, OBJECT.DESCRIPTION.length - 1)],
       photos: OBJECT.PHOTOS
     },
@@ -202,6 +209,15 @@ var renderMapPin = function (mapPin) {
   mapPinElement.querySelector('img').alt = mapPin.offer.title;
   mapPinElement.querySelector('img').src = mapPin.author.avatar;
 
+  mapPinElement.addEventListener('click', function () {
+    var MapCardRemove = mapBlock.querySelector('.map__card');
+    if (MapCardRemove) {
+      MapCardRemove.remove();
+    }
+    renderCard(mapPin);
+    document.addEventListener('keydown', onEscDown);
+  });
+
   return mapPinElement;
 };
 
@@ -232,6 +248,16 @@ var createPhotosFragment = function (card) {
   return photosFragment;
 };
 
+var createFeatureFragment = function (card) {
+  var featureFragment = document.createDocumentFragment();
+  for (var j = 0; j < card.offer.features.length; j++) {
+    var featureItem = document.createElement('li');
+    featureItem.className = 'popup__feature popup__feature--' + card.offer.features[j];
+    featureFragment.appendChild(featureItem);
+  }
+  return featureFragment;
+};
+
 /**
  * Отрисовывает карточку
  * @param {array} card
@@ -249,11 +275,20 @@ var renderCard = function (card) {
     .textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time')
     .textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
-  // cardElement.querySelector('.popup__features').innerHTML = '';
+  cardElement.querySelector('.popup__features').innerHTML = '';
+  cardElement.querySelector('.popup__features').appendChild(createFeatureFragment(card));
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
   cardElement.querySelector('.popup__photos').removeChild(cardElement.querySelector('.popup__photo'));
   cardElement.querySelector('.popup__photos').appendChild(createPhotosFragment(card));
   cardElement.querySelector('.popup__avatar').src = card.author.avatar;
+
+  filtersContainer.insertAdjacentElement('beforebegin', cardElement);
+
+  var closeCard = cardElement.querySelector('.popup__close');
+  closeCard.addEventListener('click', function () {
+    cardElement.remove();
+    document.removeEventListener('keydown', onEscDown);
+  });
 
   return cardElement;
 };
@@ -304,13 +339,16 @@ var toggleFormElementsMapFilters = function (name, bDisabled) {
  * Переключает сайт в активное состояние, делает поля форм активными и добавляет координаты в поле с адресом для пина
  */
 var enableSite = function () {
-  mapBlock.classList.remove('map--faded');
-  filterAd.classList.remove('ad-form--disabled');
-  toggleFormElementsMapFilters(filtersMap, false);
-  toggleFormElementsAdform(filterAd, false);
-  filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
-  renderPinsMarkup(getMapPins());
-  renderCardList(getMapPins());
+  if (mapBlock.classList.contains('map--faded')) {
+    mapBlock.classList.remove('map--faded');
+    filterAd.classList.remove('ad-form--disabled');
+    toggleFormElementsMapFilters(filtersMap, false);
+    toggleFormElementsAdform(filterAd, false);
+    filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+    renderPinsMarkup(getMapPins());
+    renderCardList(getMapPins());
+    document.addEventListener('keydown', onEscDown);
+  }
 };
 
 /**
