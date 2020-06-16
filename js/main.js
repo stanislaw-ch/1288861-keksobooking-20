@@ -316,7 +316,7 @@ var enableSite = function () {
   renderCardList(getMapPins());
 };
 
-// Переключает поля форм в не активное состояние
+// Переключает поля форм в неактивное состояние
 toggleFormElementsMapFilters(filtersMap, true);
 toggleFormElementsAdform(filterAd, true);
 
