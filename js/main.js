@@ -300,9 +300,6 @@ var toggleFormElementsMapFilters = function (name, bDisabled) {
   }
 };
 
-// Отображает в поле с адрессом координаты главного пина после загрузки страницы
-filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
-
 /**
  * Переключает сайт в активное состояние, делает поля форм активными и добавляет координаты в поле с адресом для пина
  */
@@ -315,24 +312,6 @@ var enableSite = function () {
   renderPinsMarkup(getMapPins());
   renderCardList(getMapPins());
 };
-
-// Переключает поля форм в неактивное состояние
-toggleFormElementsMapFilters(filtersMap, true);
-toggleFormElementsAdform(filterAd, true);
-
-// Отслеживает клик левой клавиши по пину
-mainMapPin.addEventListener('mousedown', function () {
-  if (event.which === 1) {
-    enableSite();
-  }
-});
-
-// Отслеживает нажатие клавиши enter по пину
-mainMapPin.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
-    enableSite();
-  }
-});
 
 /**
  * Переключает значения полей для типа жилья, относительно цены
@@ -394,6 +373,27 @@ var isValid = function () {
     return filterRoomSelect.setCustomValidity('');
   }
 };
+
+// Отображает в поле с адрессом координаты главного пина после загрузки страницы
+filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
+
+// Переключает поля форм в неактивное состояние
+toggleFormElementsMapFilters(filtersMap, true);
+toggleFormElementsAdform(filterAd, true);
+
+// Отслеживает клик левой клавиши по пину
+mainMapPin.addEventListener('mousedown', function () {
+  if (event.which === 1) {
+    enableSite();
+  }
+});
+
+// Отслеживает нажатие клавиши enter по пину
+mainMapPin.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    enableSite();
+  }
+});
 
 // Переключает значения полей для типа жилья, относительно цены
 setFilterByType(filterTypeSelect, filterPriceInput);
