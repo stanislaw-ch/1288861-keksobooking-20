@@ -63,17 +63,17 @@
   filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
 
   // // Переключает поля форм в неактивное состояние
-  window.form.toggleFormElementsMapFilters(filtersMap, true);
-  window.form.toggleFormElementsAdform(filterAd, true);
+  // window.form.toggleFormElementsMapFilters(filtersMap, true);
+  // window.form.toggleFormElementsAdform(filterAd, true);
 
-  // Переключает значения полей для типа жилья, относительно цены
-  window.form.setFilterByType(filterTypeSelect, filterPriceInput);
+  // // Переключает значения полей для типа жилья, относительно цены
+  // window.form.setFilterByType(filterTypeSelect, filterPriceInput);
 
-  // Переключает значения полей въезда
-  window.form.setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
+  // // Переключает значения полей въезда
+  // window.form.setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
 
-  // Переключает значения полей выезда
-  window.form.setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
+  // // Переключает значения полей выезда
+  // window.form.setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
 
   // Отслеживает клик левой клавиши по пину
   mainMapPin.addEventListener('mousedown', function () {

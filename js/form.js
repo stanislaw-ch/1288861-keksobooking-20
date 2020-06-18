@@ -8,9 +8,17 @@
   var MIN_PRICE_HOUSE = 5000;
   var MIN_PRICE_PALACE = 10000;
 
+  var filtersMap = document.querySelector('.map__filters');
+
   var filterAd = document.querySelector('.ad-form');
   var filterRoomSelect = filterAd.querySelector('#room_number');
   var filterCapacitySelect = filterAd.querySelector('#capacity');
+
+  var filterTypeSelect = filterAd.querySelector('#type');
+  var filterPriceInput = filterAd.querySelector('#price');
+
+  var filterTimeInSelect = filterAd.querySelector('#timein');
+  var filterTimeOutSelect = filterAd.querySelector('#timeout');
 
   window.form = {
     /**
@@ -111,4 +119,17 @@
       }
     }
   };
+
+  // Переключает поля форм в неактивное состояние
+  window.form.toggleFormElementsMapFilters(filtersMap, true);
+  window.form.toggleFormElementsAdform(filterAd, true);
+
+  // Переключает значения полей для типа жилья, относительно цены
+  window.form.setFilterByType(filterTypeSelect, filterPriceInput);
+
+  // Переключает значения полей въезда
+  window.form.setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
+
+  // Переключает значения полей выезда
+  window.form.setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
 })();
