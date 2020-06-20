@@ -29,6 +29,11 @@
     return photosFragment;
   };
 
+  /**
+   * Отрисовывает список с доступными удобствами в карточке объявления
+   * @param {array} card
+   * @return {object} featureFragment
+   */
   var createFeatureFragment = function (card) {
     var featureFragment = document.createDocumentFragment();
     for (var j = 0; j < card.offer.features.length; j++) {

@@ -44,7 +44,8 @@
   };
 
   /**
-   * Переключает сайт в активное состояние, делает поля форм активными и добавляет координаты в поле с адресом для пина
+   * Переключает сайт в активное состояние, отрисовывает пины на карте, карту с объявлением,
+   * делает поля форм активными и добавляет координаты в поле с адресом для пина.
    */
   var enableSite = function () {
     if (mapBlock.classList.contains('map--faded')) {
@@ -53,8 +54,11 @@
       window.form.toggleFormElementsMapFilters(filtersMap, false);
       window.form.toggleFormElementsAdform(filterAd, false);
       filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
-      window.map.renderPinsMarkup(window.map.getMapPins());
-      window.map.renderCardList(window.map.getMapPins());
+
+      window.backend.load(window.map.renderPinsMarkup);
+      window.backend.load(window.map.renderCardList);
+      // window.map.renderPinsMarkup(window.map.getMapPins());
+      // window.map.renderCardList(window.map.getMapPins());
       document.addEventListener('keydown', onEscDown);
     }
   };

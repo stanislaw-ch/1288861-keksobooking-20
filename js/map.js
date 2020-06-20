@@ -6,7 +6,7 @@ map.js — модуль, который управляет карточками 
 */
 (function () {
 
-  var TOTAL_PINS = 8;
+  // var TOTAL_PINS = 8;
 
   var similarMapPin = document.querySelector('.map__pins');
   var similarCard = document.querySelector('.map');
@@ -19,9 +19,9 @@ map.js — модуль, который управляет карточками 
      *
      * @return {array} array
      */
-    getMapPins: function () {
+    getMapPins: function (number) {
       var array = [];
-      for (var i = 0; i < TOTAL_PINS; i++) {
+      for (var i = 0; i < number.length; i++) {
         array[i] = window.data.getMapPinObject(i);
       }
       return array;
