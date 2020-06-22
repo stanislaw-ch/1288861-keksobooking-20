@@ -36,6 +36,10 @@
 
   var mapBlock = document.querySelector('.map');
 
+  /**
+   * Задает действие по нажатию на клавишу ESC
+   * @param {object} evt
+   */
   var onEscDown = function (evt) {
     var MapCardRemove = mapBlock.querySelector('.map__card');
     if (evt.keyCode === 27) {
@@ -43,8 +47,14 @@
     }
   };
 
+  var onLoadSucces = function (data) {
+    window.map.renderPinsMarkup(data);
+    window.map.renderCardList(data);
+  };
+
   /**
-   * Переключает сайт в активное состояние, делает поля форм активными и добавляет координаты в поле с адресом для пина
+   * Переключает сайт в активное состояние, отрисовывает пины на карте, карту с объявлением,
+   * делает поля форм активными и добавляет координаты в поле с адресом для пина.
    */
   var enableSite = function () {
     if (mapBlock.classList.contains('map--faded')) {
@@ -53,8 +63,8 @@
       window.form.toggleFormElementsMapFilters(filtersMap, false);
       window.form.toggleFormElementsAdform(filterAd, false);
       filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
-      window.map.renderPinsMarkup(window.map.getMapPins());
-      window.map.renderCardList(window.map.getMapPins());
+
+      window.backend.load(onLoadSucces);
       document.addEventListener('keydown', onEscDown);
     }
   };

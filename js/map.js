@@ -6,27 +6,11 @@ map.js — модуль, который управляет карточками 
 */
 (function () {
 
-  var TOTAL_PINS = 8;
-
   var similarMapPin = document.querySelector('.map__pins');
   var similarCard = document.querySelector('.map');
   var filtersContainer = document.querySelector('.map__filters-container');
 
   window.map = {
-    /**
-     * Возвращает массив из объектов
-     * @param {number} number
-     *
-     * @return {array} array
-     */
-    getMapPins: function () {
-      var array = [];
-      for (var i = 0; i < TOTAL_PINS; i++) {
-        array[i] = window.data.getMapPinObject(i);
-      }
-      return array;
-    },
-
     /**
      * Отрисовывает метки на карте
      * @param {array} pinsData
