@@ -46,10 +46,9 @@
       var mainMapPinPositionX = (mainMapPin.offsetLeft - shift.x) + MAIN_MAP_PIN_X;
       var mainMapPinPositionY = (mainMapPin.offsetTop - shift.y) + MAIN_MAP_PIN_Y;
 
-      // Отображает в поле с адрессом координаты главного пина после загрузки страницы
       filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
-
     };
+
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
 
@@ -60,4 +59,8 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.pinMove = {
+    mainMapPinPositionX: filterAdress.value,
+  };
 })();

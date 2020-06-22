@@ -74,7 +74,7 @@
       var closeCard = cardElement.querySelector('.popup__close');
       closeCard.addEventListener('click', function () {
         cardElement.remove();
-        document.removeEventListener('keydown', window.main.onEscDown);
+        document.removeEventListener('keydown', window.main.onCardEscPress);
       });
 
       return cardElement;
