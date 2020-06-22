@@ -36,11 +36,20 @@
 
   var mapBlock = document.querySelector('.map');
 
+  /**
+   * Задает действие по нажатию на клавишу ESC
+   * @param {object} evt
+   */
   var onEscDown = function (evt) {
     var MapCardRemove = mapBlock.querySelector('.map__card');
     if (evt.keyCode === 27) {
       MapCardRemove.remove();
     }
+  };
+
+  var onLoadSucces = function (data) {
+    window.map.renderPinsMarkup(data);
+    window.map.renderCardList(data);
   };
 
   /**
@@ -55,10 +64,7 @@
       window.form.toggleFormElementsAdform(filterAd, false);
       filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
 
-      window.backend.load(window.map.renderPinsMarkup);
-      window.backend.load(window.map.renderCardList);
-      // window.map.renderPinsMarkup(window.map.getMapPins());
-      // window.map.renderCardList(window.map.getMapPins());
+      window.backend.load(onLoadSucces);
       document.addEventListener('keydown', onEscDown);
     }
   };

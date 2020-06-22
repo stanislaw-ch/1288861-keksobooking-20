@@ -2,7 +2,7 @@
 
 (function () {
   var URL_LOAD = 'https://javascript.pages.academy/keksobooking/data';
-  // var URL_SEND = 'https://javascript.pages.academy/code-and-magick';
+  var URL_SEND = 'https://javascript.pages.academy/keksobooking';
   var StatusCode = {
     OK: 200
   };
@@ -43,30 +43,30 @@
 
       xhr.open('GET', URL_LOAD);
       xhr.send();
+    },
+
+    send: function (data, onError, onLoad) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status === StatusCode.OK) {
+          onLoad('Данные успешно отправлены: ' + xhr.status + ' ' + xhr.statusText);
+        } else {
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }
+      });
+      xhr.addEventListener('error', function () {
+        onError('Произошла ошибка соединения');
+      });
+      xhr.addEventListener('timeout', function () {
+        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      });
+
+      xhr.timeout = TIMEOUT_IN_MS;
+
+      xhr.open('POST', URL_SEND);
+      xhr.send(data);
     }
-
-    // send: function (data, onError, onLoad) {
-    //   var xhr = new XMLHttpRequest();
-    //   xhr.responseType = 'json';
-
-    //   xhr.addEventListener('load', function () {
-    //     if (xhr.status === StatusCode.OK) {
-    //       onLoad('Данные успешно отправлены: ' + xhr.status + ' ' + xhr.statusText);
-    //     } else {
-    //       onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
-    //     }
-    //   });
-    //   xhr.addEventListener('error', function () {
-    //     onError('Произошла ошибка соединения');
-    //   });
-    //   xhr.addEventListener('timeout', function () {
-    //     onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    //   });
-
-    //   xhr.timeout = TIMEOUT_IN_MS;
-
-    //   xhr.open('POST', URL_SEND);
-    //   xhr.send(data);
-    // }
   };
 })();
