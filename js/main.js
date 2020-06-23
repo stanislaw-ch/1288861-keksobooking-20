@@ -27,6 +27,7 @@
 
   var filterTitleInput = filterAd.querySelector('.ad-form__label');
   var submit = filterAd.querySelector('.ad-form__submit');
+  var reset = filterAd.querySelector('.ad-form__reset');
 
   var filterTypeSelect = filterAd.querySelector('#type');
   var filterPriceInput = filterAd.querySelector('#price');
@@ -36,20 +37,82 @@
 
   var mapBlock = document.querySelector('.map');
 
-  /**
-   * Задает действие по нажатию на клавишу ESC
-   * @param {object} evt
-   */
-  var onEscDown = function (evt) {
-    var MapCardRemove = mapBlock.querySelector('.map__card');
+  var success = document.querySelector('#success').content.querySelector('.success');
+  var error = document.querySelector('#error').content.querySelector('.error');
+  var main = document.querySelector('main');
+
+  var onEscDown = function (evt, action) {
     if (evt.keyCode === 27) {
-      MapCardRemove.remove();
+      action();
     }
   };
+
+  var closeCard = function () {
+    var MapCardRemove = mapBlock.querySelector('.map__card');
+    MapCardRemove.remove();
+    // document.removeEventListener('keydown', onCardEscPress);
+  };
+
+  var closeSucces = function () {
+    var successMessage = document.querySelector('.success');
+    successMessage.remove();
+    document.removeEventListener('keydown', onSuccesEscPress);
+    document.removeEventListener('click', onSuccesClick);
+  };
+
+  var closeError = function () {
+    var errorMessage = document.querySelector('.error');
+    errorMessage.remove();
+    document.removeEventListener('keydown', onErrorEscPress);
+    document.removeEventListener('click', onErrorClick);
+  };
+
+
+  var onCardEscPress = function (evt) {
+    onEscDown(evt, closeCard);
+  };
+
+  var onSuccesEscPress = function (evt) {
+    onEscDown(evt, closeSucces);
+  };
+
+  var onErrorEscPress = function (evt) {
+    onEscDown(evt, closeError);
+  };
+
+
+  var onSuccesClick = function () {
+    var MapCardRemove = document.querySelector('.success');
+    MapCardRemove.remove();
+    document.removeEventListener('click', onSuccesClick);
+    document.removeEventListener('keydown', onSuccesEscPress);
+  };
+
+  var onErrorClick = function () {
+    var MapCardRemove = document.querySelector('.error');
+    MapCardRemove.remove();
+    document.removeEventListener('click', onErrorClick);
+    document.removeEventListener('keydown', onErrorEscPress);
+  };
+
 
   var onLoadSucces = function (data) {
     window.map.renderPinsMarkup(data);
     window.map.renderCardList(data);
+  };
+
+  var upLoadSucces = function () {
+    var Fragment = success.cloneNode(true);
+    main.appendChild(Fragment);
+    document.addEventListener('keydown', onSuccesEscPress);
+    document.addEventListener('click', onSuccesClick);
+  };
+
+  var sendError = function () {
+    var Fragment = error.cloneNode(true);
+    main.appendChild(Fragment);
+    document.addEventListener('keydown', onErrorEscPress);
+    document.addEventListener('click', onErrorClick);
   };
 
   /**
@@ -65,7 +128,21 @@
       filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
 
       window.backend.load(onLoadSucces);
-      document.addEventListener('keydown', onEscDown);
+      document.addEventListener('keydown', onCardEscPress);
+    }
+  };
+
+  /**
+   * Переключает сайт в неактивное состояние, отрисовывает пины на карте, карту с объявлением,
+   * делает поля форм активными и добавляет координаты в поле с адресом для пина.
+   */
+  var disableSite = function () {
+    if (!mapBlock.classList.contains('map--faded')) {
+      mapBlock.classList.add('map--faded');
+      filterAd.classList.add('ad-form--disabled');
+      window.form.toggleFormElementsMapFilters(filtersMap, true);
+      window.form.toggleFormElementsAdform(filterAd, true);
+      document.removeEventListener('keydown', onCardEscPress);
     }
   };
 
@@ -100,6 +177,24 @@
   filterTimeOutSelect.addEventListener('change', function () {
     window.form.setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
   });
+
+  var onSubmitSuccess = function () {
+    upLoadSucces();
+    var similarPins = document.querySelectorAll('.map__pin');
+    var similarCard = document.querySelector('.map__card');
+    var isSimilarCard = !!document.querySelector('.map__card');
+    for (var i = 1; i < similarPins.length; i++) {
+      similarPins[i].remove();
+    }
+    if (isSimilarCard) {
+      similarCard.remove();
+    }
+    filterAd.reset();
+    filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+    disableSite();
+    document.addEventListener('keydown', onSuccesEscPress);
+  };
+
 
   // Отслеживает нажатие по клавише "Опубликовать"
   submit.addEventListener('click', function () {
@@ -136,12 +231,28 @@
         filterPriceInput.setCustomValidity('');
       }
     });
-
     window.form.isValid();
+  });
+
+
+  filterAd.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.send(new FormData(filterAd), sendError, onSubmitSuccess);
+  });
+
+
+  // Отслеживает нажатие по клавише "Очистить"
+  reset.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    filterAd.reset();
+    MapPinPositionX = Math.floor(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
+    MapPinPositionY = Math.floor(parseInt(mainMapPin.style.top, 10) + MAP_PIN_HEIGTH);
+    filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
   });
 
   window.main = {
     mapBlock: mapBlock,
-    onEscDown: onEscDown
+    onCardEscPress: onCardEscPress,
+    disableSite: disableSite
   };
 })();

@@ -39,6 +39,10 @@
       for (i = 0; i < textareas.length; i++) {
         textareas[i].disabled = bDisabled;
       }
+      var buttons = name.querySelectorAll('button');
+      for (i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = bDisabled;
+      }
     },
 
     /**
