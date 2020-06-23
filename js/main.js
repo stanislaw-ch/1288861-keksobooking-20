@@ -54,15 +54,17 @@
   };
 
   var closeSucces = function () {
-    var MapCardRemove = document.querySelector('.success');
-    MapCardRemove.remove();
+    var successMessage = document.querySelector('.success');
+    successMessage.remove();
     document.removeEventListener('keydown', onSuccesEscPress);
+    document.removeEventListener('click', onSuccesClick);
   };
 
   var closeError = function () {
-    var MapCardRemove = document.querySelector('.error');
-    MapCardRemove.remove();
+    var errorMessage = document.querySelector('.error');
+    errorMessage.remove();
     document.removeEventListener('keydown', onErrorEscPress);
+    document.removeEventListener('click', onErrorClick);
   };
 
 
@@ -83,12 +85,14 @@
     var MapCardRemove = document.querySelector('.success');
     MapCardRemove.remove();
     document.removeEventListener('click', onSuccesClick);
+    document.removeEventListener('keydown', onSuccesEscPress);
   };
 
   var onErrorClick = function () {
     var MapCardRemove = document.querySelector('.error');
     MapCardRemove.remove();
     document.removeEventListener('click', onErrorClick);
+    document.removeEventListener('keydown', onErrorEscPress);
   };
 
 
@@ -138,7 +142,7 @@
       filterAd.classList.add('ad-form--disabled');
       window.form.toggleFormElementsMapFilters(filtersMap, true);
       window.form.toggleFormElementsAdform(filterAd, true);
-    // filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+      document.removeEventListener('keydown', onCardEscPress);
     }
   };
 
@@ -174,9 +178,26 @@
     window.form.setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
   });
 
+  var onSubmitSuccess = function () {
+    upLoadSucces();
+    var similarPins = document.querySelectorAll('.map__pin');
+    var similarCard = document.querySelector('.map__card');
+    var isSimilarCard = !!document.querySelector('.map__card');
+    for (var i = 1; i < similarPins.length; i++) {
+      similarPins[i].remove();
+    }
+    if (isSimilarCard) {
+      similarCard.remove();
+    }
+    filterAd.reset();
+    filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+    disableSite();
+    document.addEventListener('keydown', onSuccesEscPress);
+  };
+
+
   // Отслеживает нажатие по клавише "Опубликовать"
-  submit.addEventListener('click', function (evt) {
-    evt.preventDefault();
+  submit.addEventListener('click', function () {
 
     // Проверяет поле Title на ошибки
     filterTitleInput.addEventListener('invalid', function () {
@@ -210,20 +231,13 @@
         filterPriceInput.setCustomValidity('');
       }
     });
+    window.form.isValid();
+  });
 
 
-    window.backend.send(new FormData(filterAd), sendError, function () {
-      upLoadSucces();
-      var similarPins = document.querySelectorAll('.map__pin');
-      var similarCard = document.querySelector('.map__card');
-      for (var i = 1; i < similarPins.length; i++) {
-        similarPins[i].remove();
-      }
-      similarCard.remove();
-      filterAd.reset();
-      filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
-      disableSite();
-    });
+  filterAd.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.send(new FormData(filterAd), sendError, onSubmitSuccess);
   });
 
 
