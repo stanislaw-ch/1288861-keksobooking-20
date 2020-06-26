@@ -41,6 +41,9 @@
   var error = document.querySelector('#error').content.querySelector('.error');
   var main = document.querySelector('main');
 
+  var pinsData = [];
+  var housingTypeSelect = filtersMap.querySelector('#housing-type');
+
   var onEscDown = function (evt, action) {
     if (evt.keyCode === 27) {
       action();
@@ -95,10 +98,32 @@
     document.removeEventListener('keydown', onErrorEscPress);
   };
 
-
   var onLoadSucces = function (data) {
-    window.map.renderPinsMarkup(data);
-    window.map.renderCardList(data);
+    pinsData = data;
+    window.map.renderPinsMarkup(pinsData);
+    window.map.renderCardList(pinsData);
+
+    window.form.toggleFormElementsMapFilters(filtersMap, false);
+  };
+
+  var removePins = function () {
+    var similarPins = document.querySelectorAll('.map__pin');
+    var similarCard = document.querySelector('.map__card');
+    var isSimilarCard = !!document.querySelector('.map__card');
+    for (var i = 1; i < similarPins.length; i++) {
+      similarPins[i].remove();
+    }
+    if (isSimilarCard) {
+      similarCard.remove();
+    }
+  };
+
+  var updatePins = function () {
+    var housingType = pinsData.filter(function (it) {
+      return it.offer.type === housingTypeSelect.value;
+    });
+    removePins();
+    window.map.renderPinsMarkup(housingType);
   };
 
   var upLoadSucces = function () {
@@ -123,7 +148,6 @@
     if (mapBlock.classList.contains('map--faded')) {
       mapBlock.classList.remove('map--faded');
       filterAd.classList.remove('ad-form--disabled');
-      window.form.toggleFormElementsMapFilters(filtersMap, false);
       window.form.toggleFormElementsAdform(filterAd, false);
       filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
 
@@ -145,6 +169,11 @@
       document.removeEventListener('keydown', onCardEscPress);
     }
   };
+
+  // Фильтрует объявления по типу жилья
+  housingTypeSelect.addEventListener('change', function () {
+    updatePins();
+  });
 
   // Отображает в поле с адрессом координаты главного пина после загрузки страницы
   filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
@@ -180,15 +209,7 @@
 
   var onSubmitSuccess = function () {
     upLoadSucces();
-    var similarPins = document.querySelectorAll('.map__pin');
-    var similarCard = document.querySelector('.map__card');
-    var isSimilarCard = !!document.querySelector('.map__card');
-    for (var i = 1; i < similarPins.length; i++) {
-      similarPins[i].remove();
-    }
-    if (isSimilarCard) {
-      similarCard.remove();
-    }
+    removePins();
     filterAd.reset();
     filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
     disableSite();
