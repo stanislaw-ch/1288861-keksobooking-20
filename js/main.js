@@ -211,6 +211,7 @@
     upLoadSucces();
     removePins();
     filterAd.reset();
+    filtersMap.reset();
     filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
     disableSite();
     document.addEventListener('keydown', onSuccesEscPress);
