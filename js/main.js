@@ -150,6 +150,7 @@
 
       window.backend.load(onLoadSucces);
       document.addEventListener('keydown', onCardEscPress);
+      filtersMap.addEventListener('change', filterChangeHandler);
     }
   };
 
@@ -183,8 +184,6 @@
     }
     window.debounce(updatePins());
   };
-
-  filtersMap.addEventListener('change', filterChangeHandler);
 
   var sameHousingType = function (it) {
     return housingType === 'any' ? true : it.offer.type === housingType;
