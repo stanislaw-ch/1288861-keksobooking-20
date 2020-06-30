@@ -41,8 +41,16 @@
   var error = document.querySelector('#error').content.querySelector('.error');
   var main = document.querySelector('main');
 
+  var housingType = 'any';
+  var housingPrice = 'any';
+  var housingRooms = 'any';
+  var housingGuests = 'any';
   var pinsData = [];
   var housingTypeSelect = filtersMap.querySelector('#housing-type');
+  var housingPriceSelect = filtersMap.querySelector('#housing-price');
+  var housingRoomsSelect = filtersMap.querySelector('#housing-rooms');
+  var housingGuestsSelect = filtersMap.querySelector('#housing-guests');
+  var housingFeaturesSelect = filtersMap.querySelector('#housing-features');
 
   var onEscDown = function (evt, action) {
     if (evt.keyCode === 27) {
@@ -53,7 +61,6 @@
   var closeCard = function () {
     var MapCardRemove = mapBlock.querySelector('.map__card');
     MapCardRemove.remove();
-    // document.removeEventListener('keydown', onCardEscPress);
   };
 
   var closeSucces = function () {
@@ -70,7 +77,6 @@
     document.removeEventListener('click', onErrorClick);
   };
 
-
   var onCardEscPress = function (evt) {
     onEscDown(evt, closeCard);
   };
@@ -82,7 +88,6 @@
   var onErrorEscPress = function (evt) {
     onEscDown(evt, closeError);
   };
-
 
   var onSuccesClick = function () {
     var MapCardRemove = document.querySelector('.success');
@@ -106,26 +111,6 @@
     window.form.toggleFormElementsMapFilters(filtersMap, false);
   };
 
-  var removePins = function () {
-    var similarPins = document.querySelectorAll('.map__pin');
-    var similarCard = document.querySelector('.map__card');
-    var isSimilarCard = !!document.querySelector('.map__card');
-    for (var i = 1; i < similarPins.length; i++) {
-      similarPins[i].remove();
-    }
-    if (isSimilarCard) {
-      similarCard.remove();
-    }
-  };
-
-  var updatePins = function () {
-    var housingType = pinsData.filter(function (it) {
-      return it.offer.type === housingTypeSelect.value;
-    });
-    removePins();
-    window.map.renderPinsMarkup(housingType);
-  };
-
   var upLoadSucces = function () {
     var Fragment = success.cloneNode(true);
     main.appendChild(Fragment);
@@ -138,6 +123,18 @@
     main.appendChild(Fragment);
     document.addEventListener('keydown', onErrorEscPress);
     document.addEventListener('click', onErrorClick);
+  };
+
+  var removePins = function () {
+    var similarPins = document.querySelectorAll('.map__pin');
+    var similarCard = document.querySelector('.map__card');
+    var isSimilarCard = !!similarCard;
+    for (var i = 1; i < similarPins.length; i++) {
+      similarPins[i].remove();
+    }
+    if (isSimilarCard) {
+      similarCard.remove();
+    }
   };
 
   /**
@@ -167,13 +164,114 @@
       window.form.toggleFormElementsMapFilters(filtersMap, true);
       window.form.toggleFormElementsAdform(filterAd, true);
       document.removeEventListener('keydown', onCardEscPress);
+      filtersMap.removeEventListener('change', filterChangeHandler);
     }
   };
 
-  // Фильтрует объявления по типу жилья
-  housingTypeSelect.addEventListener('change', function () {
-    updatePins();
-  });
+  var filterChangeHandler = function (evt) {
+    if (evt.target.id === housingTypeSelect.id) {
+      housingType = evt.target.value;
+    }
+    if (evt.target.id === housingPriceSelect.id) {
+      housingPrice = evt.target.value;
+    }
+    if (evt.target.id === housingRoomsSelect.id) {
+      housingRooms = evt.target.value;
+    }
+    if (evt.target.id === housingGuestsSelect.id) {
+      housingGuests = evt.target.value;
+    }
+    window.debounce(updatePins());
+  };
+
+  filtersMap.addEventListener('change', filterChangeHandler);
+
+  var sameHousingType = function (it) {
+    return housingType === 'any' ? true : it.offer.type === housingType;
+  };
+
+  var sameHousingPrice = function (it) {
+    var housingPriceOnSelect;
+    switch (housingPrice) {
+      case 'any':
+        return true;
+      case 'low':
+        housingPriceOnSelect = it.offer.price <= 10000;
+        break;
+      case 'middle':
+        housingPriceOnSelect = it.offer.price >= 10000 && it.offer.price <= 50000;
+        break;
+      case 'high':
+        housingPriceOnSelect = it.offer.price >= 50000;
+        break;
+      default:
+        return true;
+    }
+    return housingPriceOnSelect;
+  };
+
+  var sameHousingRooms = function (it) {
+    var housingRoomsOnSelect;
+    switch (housingRooms) {
+      case 'any':
+        return true;
+      case '1':
+        housingRoomsOnSelect = it.offer.rooms <= 1;
+        break;
+      case '2':
+        housingRoomsOnSelect = it.offer.rooms > 1 && it.offer.rooms <= 2;
+        break;
+      case '3':
+        housingRoomsOnSelect = it.offer.rooms > 2 && it.offer.rooms <= 3;
+        break;
+      default:
+        return true;
+    }
+    return housingRoomsOnSelect;
+  };
+
+  var sameHousingGuests = function (it) {
+    var housingGuestsOnSelect;
+    switch (housingGuests) {
+      case 'any':
+        return true;
+      case '1':
+        housingGuestsOnSelect = it.offer.guests > 0 && it.offer.guests <= 1;
+        break;
+      case '2':
+        housingGuestsOnSelect = it.offer.guests > 1 && it.offer.guests <= 2;
+        break;
+      case '0':
+        housingGuestsOnSelect = it.offer.guests >= 0 && it.offer.guests <= 0;
+        break;
+      default:
+        return true;
+    }
+    return housingGuestsOnSelect;
+  };
+
+  var sameHousingFeatures = function (it) {
+    var checkedFeaturesItems = housingFeaturesSelect.querySelectorAll('input:checked');
+    return Array.from(checkedFeaturesItems).every(function (element) {
+      return it.offer.features.includes(element.value);
+    });
+  };
+
+  var updatePins = function () {
+    var filteredPins = [];
+
+    filteredPins = pinsData.slice(0);
+    filteredPins = filteredPins
+      .filter(sameHousingType)
+      .filter(sameHousingPrice)
+      .filter(sameHousingRooms)
+      .filter(sameHousingGuests)
+      .filter(sameHousingFeatures);
+
+    removePins();
+
+    window.map.renderPinsMarkup(filteredPins);
+  };
 
   // Отображает в поле с адрессом координаты главного пина после загрузки страницы
   filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
