@@ -55,6 +55,10 @@
       for (var j = 0; j < selects.length; j++) {
         selects[j].disabled = bDisabled;
       }
+      var checkbox = name.querySelectorAll('input');
+      for (var k = 0; k < checkbox.length; k++) {
+        checkbox[k].disabled = bDisabled;
+      }
     },
 
     /**
