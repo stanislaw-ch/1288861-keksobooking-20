@@ -71,37 +71,43 @@
     }
   };
 
+  var onAvatarChange = function () {
+    var files = Array.from(fileChooserAvatar.files).filter(filtrationByCorrectType);
+    if (files) {
+      files.forEach(function (item) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          changeAvatar(reader.result);
+        });
+        reader.readAsDataURL(item);
+      });
+    }
+  };
+
+  var onPhotoChange = function () {
+    var files = Array.from(fileChooserPhoto.files).filter(filtrationByCorrectType);
+    if (files) {
+      files.forEach(function (item) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          addImages(reader.result);
+        });
+        reader.readAsDataURL(item);
+      });
+    }
+  };
+
+
   var activate = function () {
     addEmptyImgWrap();
-    fileChooserAvatar.addEventListener('change', function () {
-      var files = Array.from(fileChooserAvatar.files).filter(filtrationByCorrectType);
-      if (files) {
-        files.forEach(function (item) {
-          var reader = new FileReader();
-          reader.addEventListener('load', function () {
-            changeAvatar(reader.result);
-          });
-          reader.readAsDataURL(item);
-        });
-      }
-    });
-
-    fileChooserPhoto.addEventListener('change', function () {
-      var files = Array.from(fileChooserPhoto.files).filter(filtrationByCorrectType);
-      if (files) {
-        files.forEach(function (item) {
-          var reader = new FileReader();
-          reader.addEventListener('load', function () {
-            addImages(reader.result);
-          });
-          reader.readAsDataURL(item);
-        });
-      }
-    });
+    fileChooserAvatar.addEventListener('change', onAvatarChange);
+    fileChooserPhoto.addEventListener('change', onPhotoChange);
   };
 
   var deactivate = function () {
     removeImages();
+    fileChooserAvatar.removeEventListener('change', onAvatarChange);
+    fileChooserPhoto.removeEventListener('change', onPhotoChange);
   };
 
   window.loadImage = {
