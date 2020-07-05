@@ -151,6 +151,8 @@
       window.backend.load(onLoadSucces);
       document.addEventListener('keydown', onCardEscPress);
       filtersMap.addEventListener('change', filterChangeHandler);
+
+      window.loadImage.activate();
     }
   };
 
@@ -312,6 +314,7 @@
     filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
     disableSite();
     document.addEventListener('keydown', onSuccesEscPress);
+    window.loadImage.deactivate();
   };
 
 
