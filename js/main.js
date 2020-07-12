@@ -117,8 +117,8 @@
   };
 
   // Отслеживает клик левой клавиши по пину
-  mainMapPin.addEventListener('mousedown', function () {
-    if (event.which === 1) {
+  mainMapPin.addEventListener('mousedown', function (evt) {
+    if (evt.which === 1) {
       enableSite();
     }
   });
