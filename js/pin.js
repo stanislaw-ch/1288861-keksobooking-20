@@ -1,8 +1,8 @@
 'use strict';
 
-// pin.js — модуль, который отвечает за создание метки на карте;
 (function () {
 
+  var mapBlock = document.querySelector('.map');
   var similarMapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   window.pin = {
@@ -21,15 +21,26 @@
       mapPinElement.querySelector('img').src = mapPin.author.avatar;
 
       mapPinElement.addEventListener('click', function () {
-        var MapCardRemove = window.main.mapBlock.querySelector('.map__card');
+        var MapCardRemove = mapBlock.querySelector('.map__card');
         if (MapCardRemove) {
           MapCardRemove.remove();
         }
         window.card.renderCard(mapPin);
-        document.addEventListener('keydown', window.main.onEscDown);
       });
 
       return mapPinElement;
+    },
+
+    removePins: function () {
+      var similarPins = document.querySelectorAll('.map__pin');
+      var similarCard = document.querySelector('.map__card');
+      var isSimilarCard = !!similarCard;
+      for (var i = 1; i < similarPins.length; i++) {
+        similarPins[i].remove();
+      }
+      if (isSimilarCard) {
+        similarCard.remove();
+      }
     }
   };
 })();

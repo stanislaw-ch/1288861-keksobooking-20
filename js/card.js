@@ -1,13 +1,12 @@
 'use strict';
 
-// card.js — модуль, который отвечает за создание карточки объявлений;
 (function () {
 
-  var typesMap = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+  var TypesMap = {
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
   var template = document.querySelector('template');
   var popupPhoto = template.content.querySelector('.popup__photo');
@@ -57,7 +56,7 @@
       cardElement.querySelector('.popup__title').textContent = card.offer.title;
       cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
       cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-      cardElement.querySelector('.popup__type').textContent = typesMap[card.offer.type];
+      cardElement.querySelector('.popup__type').textContent = TypesMap[card.offer.type];
       cardElement.querySelector('.popup__text--capacity')
         .textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
       cardElement.querySelector('.popup__text--time')

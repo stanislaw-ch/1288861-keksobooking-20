@@ -1,38 +1,80 @@
 'use strict';
 
-/*
-map.js — модуль, который управляет карточками объявлений и метками: добавляет на страницу нужную карточку,
-отрисовывает метки и осуществляет взаимодействие карточки и метки на карте;
-*/
 (function () {
   var MAX_PIN_COUNT = 5;
 
+  var MAIN_MAP_PIN_WIDTH = 65;
+  var MAIN_MAP_PIN_HEIGTH = 65;
+  var MAP_PIN_HEIGTH = 85;
+  var MAP_PIN_POSITION_LEFT = '570px';
+  var MAP_PIN_POSITION_TOP = '375px';
+
+
+  var filterAd = document.querySelector('.ad-form');
+  var filterAdress = filterAd.querySelector('#address');
+
+  var mapBlock = document.querySelector('.map');
+
   var similarMapPin = document.querySelector('.map__pins');
+  var mainMapPin = similarMapPin.querySelector('.map__pin--main');
+  var mapPin = similarMapPin.querySelector('.map__pin');
   var similarCard = document.querySelector('.map');
   var filtersContainer = document.querySelector('.map__filters-container');
 
-  window.map = {
-    /**
+  var mainMapPinPositionX = Math.floor(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
+  var mainMapPinPositionY = Math.floor(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGTH / 2);
+  var MapPinPositionX = Math.floor(parseInt(mapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
+  var MapPinPositionY = Math.floor(parseInt(mapPin.style.top, 10) + MAP_PIN_HEIGTH);
+
+  /**
      * Отрисовывает метки на карте
      * @param {array} pinsData
      */
-    renderPinsMarkup: function (pinsData) {
-      var takeNumber = pinsData.length > MAX_PIN_COUNT ? MAX_PIN_COUNT : pinsData.length;
-      var Fragment = document.createDocumentFragment();
-      for (var j = 0; j < takeNumber; j++) {
-        Fragment.appendChild(window.pin.renderMapPin(pinsData[j]));
-      }
-      similarMapPin.appendChild(Fragment);
-    },
-
-    /**
-     * Отрисовывает карточку объявления после активации страницы
-     * @param {array} cardData
-     */
-    renderCardList: function (cardData) {
-      var Fragment = document.createDocumentFragment();
-      Fragment.appendChild(window.card.renderCard(cardData[0]));
-      similarCard.insertBefore(Fragment, filtersContainer);
+  var renderPinsMarkup = function (pinsData) {
+    var takeNumber = pinsData.length > MAX_PIN_COUNT ? MAX_PIN_COUNT : pinsData.length;
+    var Fragment = document.createDocumentFragment();
+    for (var j = 0; j < takeNumber; j++) {
+      Fragment.appendChild(window.pin.renderMapPin(pinsData[j]));
     }
+    similarMapPin.appendChild(Fragment);
+  };
+
+  /**
+   * Отрисовывает карточку объявления после активации страницы
+   * @param {array} cardData
+   */
+  var renderCardList = function (cardData) {
+    var Fragment = document.createDocumentFragment();
+    Fragment.appendChild(window.card.renderCard(cardData[0]));
+    similarCard.insertBefore(Fragment, filtersContainer);
+  };
+
+  var closeCard = function () {
+    var MapCardRemove = mapBlock.querySelector('.map__card');
+    MapCardRemove.remove();
+  };
+
+  var onCardEscPress = function (evt) {
+    window.utils.onEscDown(evt, closeCard);
+  };
+
+  var setFilterAdress = function () {
+    filterAdress.value = MapPinPositionX + ', ' + MapPinPositionY;
+  };
+
+  var setMainMapPinPosition = function () {
+    mainMapPin.style.left = MAP_PIN_POSITION_LEFT;
+    mainMapPin.style.top = MAP_PIN_POSITION_TOP;
+    filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
+  };
+
+  filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
+
+  window.map = {
+    renderPinsMarkup: renderPinsMarkup,
+    renderCardList: renderCardList,
+    onCardEscPress: onCardEscPress,
+    setFilterAdress: setFilterAdress,
+    setMainMapPinPosition: setMainMapPinPosition
   };
 })();

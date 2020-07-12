@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
 
   var MAIN_MAP_PIN_X = 32;
@@ -9,10 +10,6 @@
 
   var filterAd = document.querySelector('.ad-form');
   var filterAdress = filterAd.querySelector('#address');
-
-  // var getPinPosition = function () {
-
-  // };
 
   mainMapPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();

@@ -29,7 +29,6 @@
     newImageWrap.classList.add('ad-form__photo--added');
     image.alt = ImageParams.ALT;
     image.src = src;
-    // image.style.width = ImageParams.WIDTH;
     image.style.height = ImageParams.HEIGHT;
     image.style.borderRadius = ImageParams.BORDER_RADIUS;
     newImageWrap.appendChild(image);
@@ -71,30 +70,25 @@
     }
   };
 
-  var onAvatarChange = function () {
-    var files = Array.from(fileChooserAvatar.files).filter(filtrationByCorrectType);
+  var loadFile = function (select, func) {
+    var files = Array.from(select.files).filter(filtrationByCorrectType);
     if (files) {
-      files.forEach(function (item) {
+      files.forEach(function (elem) {
         var reader = new FileReader();
         reader.addEventListener('load', function () {
-          changeAvatar(reader.result);
+          func(reader.result);
         });
-        reader.readAsDataURL(item);
+        reader.readAsDataURL(elem);
       });
     }
   };
 
-  var onPhotoChange = function () {
-    var files = Array.from(fileChooserPhoto.files).filter(filtrationByCorrectType);
-    if (files) {
-      files.forEach(function (item) {
-        var reader = new FileReader();
-        reader.addEventListener('load', function () {
-          addImages(reader.result);
-        });
-        reader.readAsDataURL(item);
-      });
-    }
+  var onAvatarChange = function (evt) {
+    loadFile(evt.target, changeAvatar);
+  };
+
+  var onPhotoChange = function (evt) {
+    loadFile(evt.target, addImages);
   };
 
 
