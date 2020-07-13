@@ -56,7 +56,6 @@
   var onLoadSucces = function (data) {
     pinsData = data;
     window.map.renderPinsMarkup(pinsData);
-    window.map.renderCardList(pinsData);
     window.filter.activate(data);
   };
 

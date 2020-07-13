@@ -18,8 +18,6 @@
   var similarMapPin = document.querySelector('.map__pins');
   var mainMapPin = similarMapPin.querySelector('.map__pin--main');
   var mapPin = similarMapPin.querySelector('.map__pin');
-  var similarCard = document.querySelector('.map');
-  var filtersContainer = document.querySelector('.map__filters-container');
 
   var mainMapPinPositionX = Math.floor(parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
   var mainMapPinPositionY = Math.floor(parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGTH / 2);
@@ -33,12 +31,6 @@
       Fragment.appendChild(window.pin.renderMapPin(pinsData[j]));
     }
     similarMapPin.appendChild(Fragment);
-  };
-
-  var renderCardList = function (cardData) {
-    var Fragment = document.createDocumentFragment();
-    Fragment.appendChild(window.card.renderCard(cardData[0]));
-    similarCard.insertBefore(Fragment, filtersContainer);
   };
 
   var closeCard = function () {
@@ -64,7 +56,6 @@
 
   window.map = {
     renderPinsMarkup: renderPinsMarkup,
-    renderCardList: renderCardList,
     onCardEscPress: onCardEscPress,
     setFilterAdress: setFilterAdress,
     setMainMapPinPosition: setMainMapPinPosition

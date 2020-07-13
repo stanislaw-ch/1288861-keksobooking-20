@@ -5,6 +5,17 @@
   var MAIN_MAP_PIN_X = 32;
   var MAIN_MAP_PIN_Y = 87;
 
+  var DragLimit = {
+    X: {
+      MIN: 0,
+      MAX: 1200
+    },
+    Y: {
+      MIN: 130,
+      MAX: 630
+    }
+  };
+
   var similarMapPin = document.querySelector('.map__pins');
   var mainMapPin = similarMapPin.querySelector('.map__pin--main');
 
@@ -32,11 +43,11 @@
         y: moveEvt.clientY
       };
 
-      if ((mainMapPin.offsetTop - shift.y) >= (130 - MAIN_MAP_PIN_Y) && (mainMapPin.offsetTop - shift.y + MAIN_MAP_PIN_Y) <= 630) {
+      if ((mainMapPin.offsetTop - shift.y) > (DragLimit.Y.MIN - MAIN_MAP_PIN_Y) && (mainMapPin.offsetTop - shift.y + MAIN_MAP_PIN_Y) < DragLimit.Y.MAX) {
         mainMapPin.style.top = (mainMapPin.offsetTop - shift.y) + 'px';
       }
 
-      if ((mainMapPin.offsetLeft - shift.x) >= (0 - MAIN_MAP_PIN_X) && (mainMapPin.offsetLeft - shift.x) <= (1200 - MAIN_MAP_PIN_X)) {
+      if ((mainMapPin.offsetLeft - shift.x) > (DragLimit.X.MIN - MAIN_MAP_PIN_X) && (mainMapPin.offsetLeft - shift.x) < (DragLimit.X.MAX - MAIN_MAP_PIN_X)) {
         mainMapPin.style.left = (mainMapPin.offsetLeft - shift.x) + 'px';
       }
 

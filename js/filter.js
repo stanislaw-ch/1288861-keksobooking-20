@@ -2,6 +2,8 @@
 
 (function () {
   var PINS_LIMIT = 5;
+  var PRICE_RANGE_LOW = 10000;
+  var PRICE_RANGE_MIDDLE = 50000;
 
   var filter = document.querySelector('.map__filters');
   var filterItems = filter.querySelectorAll('select, input');
@@ -29,13 +31,13 @@
       case 'any':
         return true;
       case 'low':
-        housingPriceOnSelect = it.offer.price <= 10000;
+        housingPriceOnSelect = it.offer.price <= PRICE_RANGE_LOW;
         break;
       case 'middle':
-        housingPriceOnSelect = it.offer.price >= 10000 && it.offer.price <= 50000;
+        housingPriceOnSelect = it.offer.price >= PRICE_RANGE_LOW && it.offer.price <= PRICE_RANGE_MIDDLE;
         break;
       case 'high':
-        housingPriceOnSelect = it.offer.price >= 50000;
+        housingPriceOnSelect = it.offer.price >= PRICE_RANGE_MIDDLE;
         break;
       default:
         return true;

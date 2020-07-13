@@ -45,19 +45,19 @@
   var setFilterByType = function (selectList, selectOption) {
     switch (selectList.value) {
       case 'bungalo':
-        selectOption.min = 0;
+        selectOption.min = MIN_PRICE_BUNGALO;
         selectOption.placeholder = MIN_PRICE_BUNGALO;
         break;
       case 'flat':
-        selectOption.min = 1000;
+        selectOption.min = MIN_PRICE_FLAT;
         selectOption.placeholder = MIN_PRICE_FLAT;
         break;
       case 'house':
-        selectOption.min = 5000;
+        selectOption.min = MIN_PRICE_HOUSE;
         selectOption.placeholder = MIN_PRICE_HOUSE;
         break;
       case 'palace':
-        selectOption.min = 10000;
+        selectOption.min = MIN_PRICE_PALACE;
         selectOption.placeholder = MIN_PRICE_PALACE;
         break;
     }
