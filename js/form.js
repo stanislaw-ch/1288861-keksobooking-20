@@ -23,11 +23,6 @@
   var filterTimeInSelect = filterAd.querySelector('#timein');
   var filterTimeOutSelect = filterAd.querySelector('#timeout');
 
-  /**
-   * Переключает поля формы объявления для input, select, textarea в активное или не активное состояние
-   * @param {object} name
-   * @param {boolean} bDisabled
-   */
   var toggleFormElementsAdform = function (name, bDisabled) {
     var inputs = name.querySelectorAll('input');
     for (var i = 0; i < inputs.length; i++) {
@@ -47,11 +42,6 @@
     }
   };
 
-  /**
-   * Переключает значения полей для типа жилья, относительно цены
-   * @param {object} selectList
-     * @param {object} selectOption
-     */
   var setFilterByType = function (selectList, selectOption) {
     switch (selectList.value) {
       case 'bungalo':
@@ -73,11 +63,6 @@
     }
   };
 
-  /**
-   * Отслеживает переключение значений полей для заезда и выезда
-   * @param {object} selectList
-   * @param {object} selectOption
-   */
   var setTimeByInOutType = function (selectList, selectOption) {
     switch (selectList.value) {
       case '12:00':
@@ -92,10 +77,6 @@
     }
   };
 
-  /**
-   * Возращает ошибку если валидация количества комнат и количества мест не соответствует заданным параметрам
-   * @return {object}
-   */
   var isRoomValid = function () {
     var valueRooom = parseInt(filterRoomSelect.value, 10);
     var valueCapacity = parseInt(filterCapacitySelect.value, 10);
@@ -113,7 +94,6 @@
     }
   };
 
-  // Проверяет поле Title на ошибки
   var isTitleValid = function () {
     if (filterTitleInput.validity.valueMissing) {
       filterTitleInput.setCustomValidity('Обязательное поле');
@@ -134,7 +114,6 @@
     }
   };
 
-  // Проверяет поле Price на ошибки
   var isPriceInputValid = function () {
     var value = filterPriceInput.value;
 
@@ -183,13 +162,8 @@
     toggleFormElementsAdform(filterAd, false);
   };
 
-  // Переключает значения полей для типа жилья, относительно цены
   setFilterByType(filterTypeSelect, filterPriceInput);
-
-  // Переключает значения полей въезда
   setTimeByInOutType(filterTimeInSelect, filterTimeOutSelect);
-
-  // Переключает значения полей выезда
   setTimeByInOutType(filterTimeOutSelect, filterTimeInSelect);
 
   window.form = {

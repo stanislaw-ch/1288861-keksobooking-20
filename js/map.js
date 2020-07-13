@@ -26,10 +26,6 @@
   var MapPinPositionX = Math.floor(parseInt(mapPin.style.left, 10) + MAIN_MAP_PIN_WIDTH / 2);
   var MapPinPositionY = Math.floor(parseInt(mapPin.style.top, 10) + MAP_PIN_HEIGTH);
 
-  /**
-     * Отрисовывает метки на карте
-     * @param {array} pinsData
-     */
   var renderPinsMarkup = function (pinsData) {
     var takeNumber = pinsData.length > MAX_PIN_COUNT ? MAX_PIN_COUNT : pinsData.length;
     var Fragment = document.createDocumentFragment();
@@ -39,10 +35,6 @@
     similarMapPin.appendChild(Fragment);
   };
 
-  /**
-   * Отрисовывает карточку объявления после активации страницы
-   * @param {array} cardData
-   */
   var renderCardList = function (cardData) {
     var Fragment = document.createDocumentFragment();
     Fragment.appendChild(window.card.renderCard(cardData[0]));

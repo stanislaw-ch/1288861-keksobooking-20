@@ -74,10 +74,6 @@
     document.addEventListener('click', onErrorClick);
   };
 
-  /**
-   * Переключает сайт в активное состояние, отрисовывает пины на карте, карту с объявлением,
-   * делает поля форм активными и добавляет координаты в поле с адресом для пина.
-   */
   var enableSite = function () {
     if (mapBlock.classList.contains('map--faded')) {
       mapBlock.classList.remove('map--faded');
@@ -91,10 +87,6 @@
     }
   };
 
-  /**
-   * Переключает сайт в неактивное состояние, отрисовывает пины на карте, карту с объявлением,
-   * делает поля форм активными и добавляет координаты в поле с адресом для пина.
-   */
   var disableSite = function () {
     if (!mapBlock.classList.contains('map--faded')) {
       mapBlock.classList.add('map--faded');
@@ -107,30 +99,28 @@
 
   var onSubmitSuccess = function () {
     upLoadSucces();
-    window.pin.removePins();
-    filterAd.reset();
-    window.map.setMainMapPinPosition();
     disableSite();
-    document.addEventListener('keydown', onSuccesEscPress);
-    window.loadImage.deactivate();
+    filterAd.reset();
+    window.pin.removePins();
     window.filter.deactivate();
+    window.loadImage.deactivate();
+    window.map.setMainMapPinPosition();
+
+    document.addEventListener('keydown', onSuccesEscPress);
   };
 
-  // Отслеживает клик левой клавиши по пину
   mainMapPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
       enableSite();
     }
   });
 
-  // Отслеживает нажатие клавиши enter по пину
   mainMapPin.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
       enableSite();
     }
   });
 
-  // Отслеживает нажатие по клавише "Опубликовать"
   submit.addEventListener('click', function () {
     window.form.isRoomValid();
   });
@@ -140,11 +130,10 @@
     window.backend.send(new FormData(filterAd), sendError, onSubmitSuccess);
   });
 
-  // Отслеживает нажатие по клавише "Очистить"
   reset.addEventListener('click', function (evt) {
     evt.preventDefault();
-    filterAd.reset();
     disableSite();
+    filterAd.reset();
     window.pin.removePins();
     window.filter.deactivate();
     window.loadImage.deactivate();
