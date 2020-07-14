@@ -2,8 +2,9 @@
 
 (function () {
 
-  var MAIN_MAP_PIN_X = 32;
-  var MAIN_MAP_PIN_Y = 87;
+  var MAIN_MAP_PIN_HEIGHT = 86;
+  var MAIN_MAP_PIN_WIDTH = 65;
+  var MAIN_MAP_PIN_MIDDLE_X = Math.ceil(MAIN_MAP_PIN_WIDTH / 2);
 
   var DragLimit = {
     X: {
@@ -43,16 +44,16 @@
         y: moveEvt.clientY
       };
 
-      if ((mainMapPin.offsetTop - shift.y) > (DragLimit.Y.MIN - MAIN_MAP_PIN_Y) && (mainMapPin.offsetTop - shift.y + MAIN_MAP_PIN_Y) < DragLimit.Y.MAX) {
+      if ((mainMapPin.offsetTop - shift.y) >= (DragLimit.Y.MIN - MAIN_MAP_PIN_HEIGHT) && (mainMapPin.offsetTop - shift.y + MAIN_MAP_PIN_HEIGHT) <= DragLimit.Y.MAX) {
         mainMapPin.style.top = (mainMapPin.offsetTop - shift.y) + 'px';
       }
 
-      if ((mainMapPin.offsetLeft - shift.x) > (DragLimit.X.MIN - MAIN_MAP_PIN_X) && (mainMapPin.offsetLeft - shift.x) < (DragLimit.X.MAX - MAIN_MAP_PIN_X)) {
+      if ((mainMapPin.offsetLeft - shift.x) >= (DragLimit.X.MIN - MAIN_MAP_PIN_MIDDLE_X) && (mainMapPin.offsetLeft - shift.x) <= (DragLimit.X.MAX - MAIN_MAP_PIN_MIDDLE_X)) {
         mainMapPin.style.left = (mainMapPin.offsetLeft - shift.x) + 'px';
       }
 
-      var mainMapPinPositionX = (mainMapPin.offsetLeft - shift.x) + MAIN_MAP_PIN_X;
-      var mainMapPinPositionY = (mainMapPin.offsetTop - shift.y) + MAIN_MAP_PIN_Y;
+      var mainMapPinPositionX = parseInt(mainMapPin.style.left, 10) + MAIN_MAP_PIN_MIDDLE_X;
+      var mainMapPinPositionY = parseInt(mainMapPin.style.top, 10) + MAIN_MAP_PIN_HEIGHT;
 
       filterAdress.value = mainMapPinPositionX + ', ' + mainMapPinPositionY;
     };
